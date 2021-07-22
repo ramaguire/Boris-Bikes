@@ -6,15 +6,15 @@ describe DockingStation do
   describe '#release_bike' do
 
     it 'releases bike' do
+      ds = DockingStation.new
       bike = Bike.new
-      subject.dock(bike)
-      expect(subject.release_bike).to eq bike
+      ds.dock(bike)
+      expect(ds.release_bike).to eq (bike)
     end
 
     it 'raises an error when asked to release a bike from empty dock' do
-      ds = DockingStation.new
-      @bikes = []
-      expect{ds.release_bike}.to raise_error 'No bikes available'
+      
+      expect{subject.release_bike}.to raise_error 'No bikes available'
     end
 
   end
@@ -26,18 +26,26 @@ describe DockingStation do
     expect(object).to be_working  
   end
 
-  it { is_expected.to respond_to(:bike) }
-
   describe '#dock' do
     it 'returns docked bikes' do
-      subject.dock(bike)
-      expect(subject.dock).to eq (bike)
+      ds = DockingStation.new
+      bike = Bike.new
+      storage = [bike]
+      expect(subject.dock(bike)).to eq (storage)
     end
 
-    it 'raises an error when asked to dock a bike when full'
-      @bikes = []
-      @bikes.count 20
-    expect{subject.dock(bike)}.to raise_error 'dock is full'
+    it 'raises an error when asked to dock a bike when full' do
+      subject.capacity.times {subject.dock Bike.new }
+      expect{subject.dock(Bike.new)}.to raise_error 'dock is full'
+    end
+
+    it 'raises an error when asked to dock a bike when full with non-default capacity' do
+      ds = DockingStation.new(10)
+      ds.capacity.times {ds.dock Bike.new}
+      expect{ds.dock(Bike.new)}.to raise_error 'dock is full'
+    end
+  
   end
   
+
 end
